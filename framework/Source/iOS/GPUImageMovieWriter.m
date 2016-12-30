@@ -763,7 +763,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
 
     GPUImageFramebuffer *inputFramebufferForBlock = firstInputFramebuffer;
-    glFinish();
+    if (![GPUImageContext supportsFastTextureUpload]) {
+        glFinish();
+    }
+    else {
+        glFlush();
+    }
 
     runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
         if (!assetWriterVideoInput.readyForMoreMediaData && _encodingLiveVideo)
